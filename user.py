@@ -69,7 +69,7 @@ class PreferenceLinkedList:
     def remove_preference(self, preference: str):
         """Remove a preference by name."""
         if not self.head:
-            print("   ⚠ No preferences to remove.")
+            print("   [WARN] No preferences to remove.")
             return
 
         # Edge case: removing the head node
@@ -88,7 +88,7 @@ class PreferenceLinkedList:
                 return
             current = current.next
 
-        print(f"   ⚠ Preference '{preference}' not found.")
+        print(f"   [WARN] Preference '{preference}' not found.")
 
     def get_top_preferences(self, n: int = 3) -> list:
         """Return top-n preferences sorted by weight descending."""
@@ -142,15 +142,15 @@ class ReadingHistoryStack:
         """Push a finished book (as dict) onto the stack."""
         if len(self._stack) >= self.max_size:
             self._stack.pop(0)   # remove oldest to stay within limit
-            print("   ⚠ History full — oldest entry removed.")
+            print("   [WARN] History full - oldest entry removed.")
 
         self._stack.append(book_dict)
-        print(f"   📚 Added to history: '{book_dict['title']}' by {book_dict['author']}")
+        print(f"   [HISTORY] Added to history: '{book_dict['title']}' by {book_dict['author']}")
 
     def pop(self) -> dict:
         """Remove and return the most recently read book."""
         if self.is_empty():
-            print("   ⚠ Reading history is empty.")
+            print("   [WARN] Reading history is empty.")
             return None
         return self._stack.pop()
 
@@ -228,7 +228,7 @@ class ReadingQueue:
             print("   ⚠ Reading list is empty.")
             return None
         book = self._queue.popleft()
-        print(f"   ✅ Starting: '{book['title']}' — removed from queue.")
+        print(f"   [OK] Starting: '{book['title']}' - removed from queue.")
         return book
 
     def peek_next(self) -> dict:
@@ -318,7 +318,7 @@ class UserProfile:
         try:
             book.mark_finished(rating)
         except ValueError as e:
-            print(f"   ⚠ {e}")
+            print(f"   [WARN] {e}")
             return
 
         book_dict = book.to_dict()
@@ -335,14 +335,14 @@ class UserProfile:
         # Remove from reading list if present
         if self.reading_list.contains(book.title):
             self.reading_list.remove_by_title(book.title)
-            print(f"   🗑 '{book.title}' removed from reading list.")
+            print(f"   [REMOVED] '{book.title}' removed from reading list.")
 
     def undo_last_read(self):
         """Pop the last entry off the history stack."""
         book = self.history.pop()
         if book:
             self.profile["ratings"].pop(book["title"], None)
-            print(f"   ↩ Undone: '{book['title']}' removed from history.")
+            print(f"   [UNDO] Undone: '{book['title']}' removed from history.")
 
     def get_last_read(self) -> dict:
         return self.history.peek()
@@ -352,10 +352,10 @@ class UserProfile:
     def add_to_reading_list(self, book: Book):
         """Enqueue a book onto the reading list."""
         if self.has_read(book.title):
-            print(f"   ⚠ You've already read '{book.title}'.")
+            print(f"   [WARN] You've already read '{book.title}'.")
             return
         if self.reading_list.contains(book.title):
-            print(f"   ⚠ '{book.title}' is already in your reading list.")
+            print(f"   [WARN] '{book.title}' is already in your reading list.")
             return
         self.reading_list.enqueue(book.to_dict())
 
@@ -417,24 +417,24 @@ class UserProfile:
         }
         with open(filename, "w") as f:
             json.dump(data, f, indent=2)
-        print(f"\n   💾 Profile saved to '{filename}'")
+        print(f"   [SAVE] Profile saved to '{filename}'")
 
     def display_full_profile(self):
         """Pretty-print the complete user profile."""
         print(f"\n{'═'*60}")
-        print(f"  👤 USER PROFILE")
+        print(f"  USER PROFILE")
         print(f"{'═'*60}")
         print(f"  Name    : {self.get_name()}")
         print(f"  ID      : {self.get_id()}")
         print(f"  Email   : {self.get_email()}")
         print(f"  Joined  : {self.profile['created_at']}")
 
-        print(f"\n  📊 STATS")
+        print(f"\n  STATS")
         print(f"  Books Read   : {self.history.size()}")
         print(f"  Avg Rating   : {self.history.get_average_rating()} ⭐")
         print(f"  Reading List : {self.reading_list.size()} book(s) queued")
 
-        print(f"\n  🎯 TOP PREFERENCES (Linked List):")
+        print(f"\n  TOP PREFERENCES (Linked List):")
         top = self.get_top_preferences(5)
         if top:
             for pref, weight in top:
@@ -443,7 +443,7 @@ class UserProfile:
         else:
             print("    (none yet)")
 
-        print(f"\n  📚 READING HISTORY (Stack):")
+        print(f"\n  READING HISTORY (Stack):")
         self.history.display()
 
         print(f"\n  📋 READING LIST (Queue):")
@@ -468,11 +468,11 @@ class UserProfileManager:
 
     def create_user(self, user_id: str, name: str, email: str) -> UserProfile:
         if user_id in self._users:
-            print(f"⚠ User '{user_id}' already exists.")
+            print(f"[WARN] User '{user_id}' already exists.")
             return self._users[user_id]
         profile = UserProfile(user_id, name, email)
         self._users[user_id] = profile
-        print(f"✅ User created: {name} (ID: {user_id})")
+        print(f"[OK] User created: {name} (ID: {user_id})")
         return profile
 
     def get_user(self, user_id: str) -> UserProfile:
@@ -484,7 +484,7 @@ class UserProfileManager:
     def delete_user(self, user_id: str):
         if user_id in self._users:
             del self._users[user_id]
-            print(f"🗑 User '{user_id}' deleted.")
+            print(f"[DELETED] User '{user_id}' deleted.")
         else:
             print(f"⚠ User '{user_id}' not found.")
 

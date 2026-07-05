@@ -1,91 +1,277 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Card Catalog — Search & Filter Module</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<link rel="script" href="{{ url_for('static', filename='script.js') }}">
-<link rel="python" href="Search.py">
-
-
-
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Catalog � Search & Filter Module</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="scene">
+    <header class="masthead">
+      <div class="masthead-eyebrow">SEARCH &amp; FILTER MODULE</div>
+      <h1 class="masthead-title">The Card Catalog</h1>
+      <p class="masthead-sub">This page combines the search controls, results panel, history view, and catalogue into one working experience.</p>
+    </header>
 
-<div class="scene">
+    <main class="layout">
+      <section class="panel controls-panel">
+        <div class="panel-label">01 � Query</div>
 
-  <header class="masthead">
-    <div class="masthead-eyebrow">SEARCH &amp; FILTER MODULE</div>
-    <h1 class="masthead-title">The Card Catalog</h1>
-   
-  </header>
+        <div class="tabs" id="searchTabs">
+          <button class="tab active" data-type="title">Title</button>
+          <button class="tab" data-type="title_prefix">Starts with</button>
+          <button class="tab" data-type="genre">Genre</button>
+          <button class="tab" data-type="author">Author</button>
+          <button class="tab" data-type="author_sort">Author (sorted)</button>
+        </div>
 
-  <main class="layout">
-
-    <!-- LEFT: search controls -->
-    <section class="panel controls-panel">
-      <div class="panel-label">01 — Query</div>
-
-      <div class="tabs" id="searchTabs">
-        <button class="tab active" data-type="title">Title</button>
-        <button class="tab" data-type="title_prefix">Starts with</button>
-        <button class="tab" data-type="genre">Genre</button>
-        <button class="tab" data-type="author">Author</button>
-        <button class="tab" data-type="author_sort">Author (sorted)</button>
-      </div>
-
-      <form id="searchForm" class="search-form">
-        <input type="text" id="searchInput" placeholder="e.g. Limerence" autocomplete="off">
-        <button type="submit" class="btn-primary">Search</button>
-      </form>
-
-   
-
-      <details class="add-book">
-        <summary>+ Add a book to the catalogue</summary>
-        <form id="addBookForm" class="add-book-form">
-          <input type="text" id="addTitle" placeholder="Title" required>
-          <input type="text" id="addAuthor" placeholder="Author" required>
-          <input type="text" id="addGenre" placeholder="Genre" required>
-          <button type="submit" class="btn-secondary">Insert</button>
+        <form id="searchForm" class="search-form">
+          <input type="text" id="searchInput" placeholder="e.g. Dune" autocomplete="off">
+          <button type="submit" class="btn-primary">Search</button>
         </form>
-        <p class="add-book-note">Inserts into the catalogue.</p>
-      </details>
+
+        <details class="add-book">
+          <summary>+ Add a book to the catalogue</summary>
+          <form id="addBookForm" class="add-book-form">
+            <input type="text" id="addTitle" placeholder="Title" required>
+            <input type="text" id="addAuthor" placeholder="Author" required>
+            <input type="text" id="addGenre" placeholder="Genre" required>
+            <button type="submit" class="btn-secondary">Insert</button>
+          </form>
+          <p class="add-book-note">Inserts into the catalogue.</p>
+        </details>
+
+        <div class="user-controls">
+          <label for="userSelect" class="user-label">Active user</label>
+          <select id="userSelect" class="user-select"></select>
+          <div class="user-card-summary" id="userSummary">
+            <div id="profileName" class="profile-name"></div>
+            <div id="profileStats" class="profile-stats"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel results-panel">
+        <div class="panel-label" id="resultsLabel">02 � Results</div>
+        <div class="results-grid" id="resultsGrid">
+          <p class="empty-state">Run a search, or browse the full catalogue below.</p>
+        </div>
+      </section>
+    </main>
+
+    <section class="panel history-panel">
+      <div class="panel-label">03 � Search History</div>
+      <div class="history-row">
+        <button id="histBack" class="nav-arrow" disabled>&larr;</button>
+        <div class="chain" id="chain"></div>
+        <button id="histForward" class="nav-arrow" disabled>&rarr;</button>
+      </div>
+      <p class="history-hint">Use the history controls to move through previously searched queries.</p>
     </section>
 
-    <!-- RIGHT: results -->
-    <section class="panel results-panel">
-      <div class="panel-label" id="resultsLabel">02 — Results</div>
-      <div class="results-grid" id="resultsGrid">
-        <p class="empty-state">Run a search, or browse the full catalogue below.</p>
+    <section class="panel user-panel">
+      <div class="panel-label">04 � User Profile</div>
+      <div class="user-summary" id="userSummaryPanel">
+        <div id="profileName" class="profile-name"></div>
+        <div id="profileStats" class="profile-stats"></div>
+      </div>
+      <div class="profile-section">
+        <h4>Preferences</h4>
+        <div id="userPreferences"></div>
+      </div>
+      <div class="profile-section">
+        <h4>Reading List</h4>
+        <div id="readingList"></div>
+      </div>
+      <div class="profile-section">
+        <h4>Reading History</h4>
+        <div id="userHistory"></div>
+      </div>
+      <div class="profile-section">
+        <h4>Recommended Books</h4>
+        <div id="recommendations"></div>
+      </div>
+      <div class="profile-section">
+        <h4>Related Books</h4>
+        <div id="relatedBooks"></div>
       </div>
     </section>
 
-  </main>
+    <section class="panel catalogue-panel">
+      <div class="panel-label">Full Catalogue</div>
+      <div class="catalogue-list" id="catalogueList"></div>
+    </section>
+  </div>
 
-  <!-- HISTORY: doubly linked list visualization -->
-  <section class="panel history-panel">
-    <div class="panel-label">03 — Search History <span class="ds-tag"></span></div>
-    <div class="history-row">
-      <button id="histBack" class="nav-arrow" disabled>&#8592;</button>
-      <div class="chain" id="chain"><!-- nodes injected by JS --></div>
-      <button id="histForward" class="nav-arrow" disabled>&#8594;</button>
-    </div>
-    <p class="history-hint"> browser history.</p>
-  </section>
+  <script>
+    const state = { activeType: 'title', activeUser: 'U001', users: [] };
 
-  <!-- FULL CATALOGUE -->
-  <section class="panel catalogue-panel">
-    <div class="panel-label">Full Catalogue <span class="ds-tag"></span></div>
-    <div class="catalogue-list" id="catalogueList"></div>
-  </section>
+    function renderCards(items, targetId) {
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      if (!items || items.length === 0) {
+        target.innerHTML = '<p class="empty-state">No books matched that query.</p>';
+        return;
+      }
+      target.innerHTML = items.map((book) => `
+        <article class="catalog-card">
+          <h3 class="card-title">${book.title}</h3>
+          <div class="card-author">${book.author}</div>
+          <span class="card-genre">${book.genre}</span>
+        </article>
+      `).join('');
+    }
 
-</div>
+    function renderSimpleList(items, targetId, mapper, emptyText = 'No items to display.') {
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      if (!items || items.length === 0) {
+        target.innerHTML = `<p class="empty-state">${emptyText}</p>`;
+        return;
+      }
+      target.innerHTML = items.map(mapper).join('');
+    }
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+    async function loadCatalogue() {
+      const response = await fetch('/api/catalog');
+      const data = await response.json();
+      renderCards(data.books || [], 'catalogueList');
+    }
+
+    async function loadUsers() {
+      const response = await fetch('/api/users');
+      const data = await response.json();
+      state.users = data.users || [];
+      const select = document.getElementById('userSelect');
+      select.innerHTML = state.users.map((user) => `
+        <option value="${user.user_id}">${user.name}</option>
+      `).join('');
+      if (state.users.length) {
+        state.activeUser = state.users[0].user_id;
+        loadUserProfile();
+      }
+    }
+
+    async function loadUserProfile() {
+      const response = await fetch(`/api/users/${state.activeUser}`);
+      const data = await response.json();
+      if (!data.user) return;
+      document.getElementById('profileName').textContent = `${data.user.name} (${data.user.user_id})`;
+      document.getElementById('profileStats').textContent = `Books read: ${data.user.books_read} · Avg rating: ${data.user.avg_rating} · Next book: ${data.user.next_book ? data.user.next_book.title : 'none'}`;
+      await loadUserPreferences();
+      await loadUserReadingList();
+      await loadUserHistory();
+      await loadUserRecommendations();
+      await loadRelatedBooks();
+    }
+
+    async function loadUserPreferences() {
+      const response = await fetch(`/api/users/${state.activeUser}/preferences`);
+      const data = await response.json();
+      renderSimpleList(data.preferences || [], 'userPreferences', (pref) => `
+        <div class="catalogue-row">
+          <div class="col-title">${pref[0]}</div>
+          <div class="col-author">weight ${pref[1]}</div>
+        </div>
+      `, 'No preferences yet.');
+    }
+
+    async function loadUserReadingList() {
+      const response = await fetch(`/api/users/${state.activeUser}/reading_list`);
+      const data = await response.json();
+      renderSimpleList(data.reading_list || [], 'readingList', (book) => `
+        <div class="catalogue-row">
+          <div class="col-title">${book.title}</div>
+          <div class="col-author">${book.author}</div>
+          <div class="col-genre">${book.genre}</div>
+        </div>
+      `, 'No reading list items.');
+    }
+
+    async function loadUserHistory() {
+      const response = await fetch(`/api/users/${state.activeUser}/history`);
+      const data = await response.json();
+      renderSimpleList(data.history || [], 'userHistory', (book) => `
+        <div class="catalogue-row">
+          <div class="col-title">${book.title}</div>
+          <div class="col-author">${book.author}</div>
+          <div class="col-genre">${book.genre}</div>
+        </div>
+      `, 'No reading history.');
+    }
+
+    async function loadUserRecommendations() {
+      const response = await fetch(`/api/users/${state.activeUser}/recommendations`);
+      const data = await response.json();
+      renderSimpleList(data.recommendations || [], 'recommendations', (rec) => `
+        <div class="catalogue-row">
+          <div class="col-title">${rec.title}</div>
+          <div class="col-author">Score: ${rec.score}</div>
+          <div class="col-genre">ID: ${rec.book_id}</div>
+        </div>
+      `, 'No recommendations available.');
+    }
+
+    async function loadRelatedBooks() {
+      const response = await fetch(`/api/users/${state.activeUser}/related_books`);
+      const data = await response.json();
+      renderSimpleList(data.related_books || [], 'relatedBooks', (book) => `
+        <div class="catalogue-row">
+          <div class="col-title">${book.title}</div>
+          <div class="col-author">${book.author}</div>
+          <div class="col-genre">${book.genre}</div>
+        </div>
+      `, 'No related books available.');
+    }
+
+    async function runSearch(query) {
+      const response = await fetch(`/api/search?type=${state.activeType}&q=${encodeURIComponent(query)}`);
+      const data = await response.json();
+      renderCards(data.results || [], 'resultsGrid');
+    }
+
+    document.querySelectorAll('.tab').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach((btn) => btn.classList.remove('active'));
+        button.classList.add('active');
+        state.activeType = button.dataset.type;
+      });
+    });
+
+    document.getElementById('userSelect').addEventListener('change', async (event) => {
+      state.activeUser = event.target.value;
+      await loadUserProfile();
+    });
+
+    document.getElementById('searchForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const input = document.getElementById('searchInput');
+      if (!input.value.trim()) return;
+      await runSearch(input.value.trim());
+    });
+
+    document.getElementById('addBookForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const title = document.getElementById('addTitle').value.trim();
+      const author = document.getElementById('addAuthor').value.trim();
+      const genre = document.getElementById('addGenre').value.trim();
+      if (!title || !author || !genre) return;
+      await fetch('/api/books', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, author, genre })
+      });
+      document.getElementById('addBookForm').reset();
+      await loadCatalogue();
+    });
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadUsers();
+      await loadCatalogue();
+    });
+  </script>
 </body>
 </html>
