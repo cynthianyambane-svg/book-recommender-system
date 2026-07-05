@@ -5,9 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Card Catalog — Search & Filter Module</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="script" href="{{ url_for('static', filename='script.js') }}">
+<link rel="python" href="Search.py">
+
+
+
+
 </head>
 <body>
 
@@ -16,7 +21,7 @@
   <header class="masthead">
     <div class="masthead-eyebrow">SEARCH &amp; FILTER MODULE</div>
     <h1 class="masthead-title">The Card Catalog</h1>
-    <p class="masthead-sub">Search the catalogue by <strong>title</strong>, <strong>author</strong>, or <strong>genre</strong> — or browse everything below.</p>
+   
   </header>
 
   <main class="layout">
@@ -37,6 +42,8 @@
         <input type="text" id="searchInput" placeholder="e.g. Limerence" autocomplete="off">
         <button type="submit" class="btn-primary">Search</button>
       </form>
+
+   
 
       <details class="add-book">
         <summary>+ Add a book to the catalogue</summary>
@@ -62,23 +69,23 @@
 
   <!-- HISTORY: doubly linked list visualization -->
   <section class="panel history-panel">
-    <div class="panel-label">03 — Search History <span class="ds-tag" id="historyDsTag">Doubly Linked List</span></div>
+    <div class="panel-label">03 — Search History <span class="ds-tag"></span></div>
     <div class="history-row">
       <button id="histBack" class="nav-arrow" disabled>&#8592;</button>
       <div class="chain" id="chain"><!-- nodes injected by JS --></div>
       <button id="histForward" class="nav-arrow" disabled>&#8594;</button>
     </div>
-    <p class="history-hint">Each search becomes a node in the chain — step back and forward through it like browser history.</p>
+    <p class="history-hint"> browser history.</p>
   </section>
 
   <!-- FULL CATALOGUE -->
   <section class="panel catalogue-panel">
-    <div class="panel-label">Full Catalogue <span class="ds-tag" id="catalogueDsTag">Array</span></div>
+    <div class="panel-label">Full Catalogue <span class="ds-tag"></span></div>
     <div class="catalogue-list" id="catalogueList"></div>
   </section>
 
 </div>
 
-<script src="script.js"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

@@ -33,6 +33,7 @@ body {
   padding: 48px 24px 80px;
 }
 
+/* ---------- Masthead ---------- */
 
 .masthead {
   margin-bottom: 40px;
@@ -71,6 +72,7 @@ body {
   font-weight: 600;
 }
 
+/* ---------- Layout & panels ---------- */
 
 .layout {
   display: grid;
@@ -113,6 +115,7 @@ body {
   text-transform: none;
 }
 
+/* ---------- Tabs ---------- */
 
 .tabs {
   display: flex;
@@ -143,6 +146,7 @@ body {
   font-weight: 600;
 }
 
+/* ---------- Search form ---------- */
 
 .search-form {
   display: flex;
@@ -195,6 +199,7 @@ body {
 
 .btn-secondary:hover { border-color: var(--brass); }
 
+/* ---------- Meta card ---------- */
 
 .meta-card {
   background: rgba(0,0,0,0.2);
@@ -227,6 +232,7 @@ body {
 
 .mono { font-family: var(--font-mono); font-weight: 400; font-size: 12px; }
 
+/* ---------- Add book ---------- */
 
 .add-book summary {
   cursor: pointer;
@@ -259,6 +265,7 @@ body {
   margin: 8px 0 0;
 }
 
+/* ---------- Results grid (catalog cards) ---------- */
 
 .results-grid {
   display: grid;
@@ -318,6 +325,7 @@ body {
   border-radius: 2px;
 }
 
+/* ---------- History chain ---------- */
 
 .history-panel { margin-bottom: 20px; }
 
@@ -402,6 +410,7 @@ body {
   color: var(--paper-dim);
 }
 
+/* ---------- Catalogue list ---------- */
 
 .catalogue-panel { }
 
