@@ -1,17 +1,4 @@
-"""
-app.py — Flask backend for the Search & Filter Module demo UI.
 
-This file is deliberately thin: every route just calls into
-SearchFilterModule (search_filter_module.py) and converts the result
-to JSON. All the actual data structure / algorithm logic lives in
-that file, not here — this file is only the HTTP plumbing that lets
-a browser talk to it.
-
-Run with:
-    python3 app.py
-Then open:
-    http://127.0.0.1:5000
-"""
 
 from flask import Flask, render_template, request, jsonify
 

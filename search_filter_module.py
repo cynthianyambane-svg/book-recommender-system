@@ -1,56 +1,3 @@
-"""
-Search & Filter Module — Library Smart Borrowing System
-=========================================================
-
-Owns: search by title, author, and genre.
-
-Data Structures used
----------------------
-1. Binary Search Tree (BST)  -> indexed by TITLE
-   - Ordered structure: supports exact search, prefix search, and
-     sorted (in-order) listing of all titles.
-   - Average case: O(log n) search/insert.  Worst case: O(n) if the
-     tree degenerates into a linked list (e.g. titles inserted in
-     alphabetical order). Mention this tradeoff in your report.
-
-2. Hash Table (Python dict)  -> indexed by GENRE and by AUTHOR
-   - Genre/author lookups are exact-match, one-to-many (many books
-     share a genre/author), which is what hash tables are built for.
-   - Average case: O(1) lookup/insert. Worst case O(n) under heavy
-     collisions (Python handles collision resolution internally via
-     open addressing, so you can mention that in your write-up
-     rather than implement it by hand, unless your rubric wants a
-     hand-rolled hash table — a manual version with chaining is
-     included below as `SimpleHashTable` in case you need to show
-     the internals explicitly).
-
-3. Doubly Linked List  -> SEARCH HISTORY (back/forward navigation)
-   - Every search performed through this module is recorded as a
-     node. A "current position" pointer lets the user step backward
-     and forward through past searches, exactly like browser
-     history — this needs a *doubly* linked list (not singly linked)
-     because you must be able to walk in both directions from the
-     current node in O(1), and a new search after stepping back
-     truncates the abandoned "forward" branch, just like a browser
-     discards forward history once you navigate somewhere new.
-   - insert (new search) : O(1) at the tail / current position
-   - back() / forward()  : O(1) — just moves the pointer
-   - full traversal       : O(n)
-   - space                : O(n)
-
-Algorithms used
-----------------
-1. Merge Sort   -> sorts books by author (or any field) in O(n log n)
-2. Binary Search -> searches the sorted author list in O(log n)
-
-Together these give three distinct, explainable search paths:
-  Title  -> BST tree search
-  Genre  -> Hash table bucket lookup
-  Author -> Merge sort (build) + Binary search (query)
-
-...and one navigation structure layered on top of all three:
-  Search History -> Doubly linked list (back/forward through past queries)
-"""
 
 from __future__ import annotations
 from dataclasses import dataclass, field
@@ -83,9 +30,9 @@ class Book:
         }
 
 
-# ---------------------------------------------------------------------------
+
 # 1. Binary Search Tree — keyed by title
-# ---------------------------------------------------------------------------
+
 
 class _BSTNode:
     __slots__ = ("book", "left", "right")
@@ -97,16 +44,7 @@ class _BSTNode:
 
 
 class TitleBST:
-    """
-    Binary Search Tree ordered by book title (case-insensitive).
-
-    Complexity (n = number of books):
-        insert         : O(log n) average, O(n) worst case
-        search (exact) : O(log n) average, O(n) worst case
-        search_prefix  : O(log n) to locate + O(k) to collect k matches
-        in_order()     : O(n) — always visits every node once
-        space          : O(n)
-    """
+   
 
     def __init__(self):
         self.root: Optional[_BSTNode] = None
@@ -146,12 +84,7 @@ class TitleBST:
         return None
 
     def search_prefix(self, prefix: str) -> List[Book]:
-        """
-        Return all books whose title starts with `prefix`.
-        Walks the tree, pruning branches that cannot contain matches,
-        then collects matches via in-order traversal of the relevant
-        subtree so results come back alphabetically sorted.
-        """
+   
         results: List[Book] = []
         prefix = prefix.lower()
 
@@ -219,23 +152,13 @@ class TitleBST:
         return node, True
 
 
-# ---------------------------------------------------------------------------
+
 # 2. Hash Table — keyed by genre / author (Python dict, plus a manual
 #    chained version in case your rubric wants the internals shown)
-# ---------------------------------------------------------------------------
+
 
 class GenreAuthorIndex:
-    """
-    Two hash tables (Python dicts) mapping:
-        genre  -> list[Book]
-        author -> list[Book]
 
-    Complexity:
-        insert : O(1) average
-        lookup : O(1) average to find the bucket, O(k) to return k matches
-        delete : O(k) to find & remove the book within its bucket
-        space  : O(n)
-    """
 
     def __init__(self):
         self._by_genre: Dict[str, List[Book]] = {}
@@ -264,12 +187,6 @@ class GenreAuthorIndex:
 
 
 class SimpleHashTable:
-    """
-    OPTIONAL: hand-rolled hash table with separate chaining, shown here
-    only in case your assignment wants you to demonstrate collision
-    handling explicitly rather than relying on Python's built-in dict.
-    Not wired into the demo below by default.
-    """
 
     def __init__(self, capacity: int = 16):
         self.capacity = capacity
@@ -341,33 +258,7 @@ class _DLLNode:
 
 
 class SearchHistory:
-    """
-    Doubly linked list recording every search made through the module,
-    with a `current` pointer that supports browser-style back/forward
-    navigation.
-
-    Why doubly (not singly) linked:
-        A singly linked list only lets you walk forward. Back/forward
-        navigation needs O(1) movement in BOTH directions from
-        wherever `current` sits, which requires each node to know
-        its `prev` as well as its `next`.
-
-    Behaviour:
-        - record(entry) appends a new node after `current` and moves
-          `current` to it. If `current` was not already at the tail
-          (i.e. the user had stepped back), everything after it is
-          discarded first — same as a browser dropping "forward"
-          history once you navigate somewhere new.
-        - back() / forward() move `current` by one node and return
-          its entry, or None if there's nowhere to go.
-
-    Complexity (n = number of recorded searches):
-        record()          : O(1) at current position, O(k) only if
-                             truncating k abandoned forward nodes
-        back() / forward() : O(1)
-        recent(n)          : O(n) to walk backward from the tail
-        space              : O(n)
-    """
+ 
 
     def __init__(self):
         self.head: Optional[_DLLNode] = None
@@ -436,13 +327,7 @@ class SearchHistory:
         return out
 
     def status(self) -> dict:
-        """
-        Snapshot of the whole list plus where `current` sits, and
-        whether back()/forward() are currently possible. Built for
-        UI consumption (e.g. enabling/disabling nav buttons, drawing
-        the chain of nodes with the current one highlighted).
-        O(n) — walks the list once to find current's index.
-        """
+   
         timeline = self.full_timeline()
         current_index = None
         node = self.head
@@ -474,11 +359,7 @@ class SearchHistory:
 # ---------------------------------------------------------------------------
 
 def merge_sort(books: List[Book], key=lambda b: b.author.lower()) -> List[Book]:
-    """
-    Standard merge sort, O(n log n) time, O(n) extra space.
-    Stable sort — books with equal keys keep their relative order,
-    which matters if you later sort by a secondary field.
-    """
+ 
     if len(books) <= 1:
         return books[:]
     mid = len(books) // 2
@@ -541,11 +422,7 @@ def binary_search_by_author(sorted_books: List[Book], author: str) -> List[Book]
 # ---------------------------------------------------------------------------
 
 class SearchFilterModule:
-    """
-    Facade tying the BST, hash indexes, and sort/search algorithms
-    together. Your UI layer (Flask route, CLI, GUI button handler,
-    etc.) should only ever talk to this class.
-    """
+
 
     def __init__(self):
         self._title_bst = TitleBST()
