@@ -73,6 +73,15 @@ def _seed_sample_users():
     alice.add_preference("Sci-Fi", weight=3)
     bob.add_preference("Dystopian", weight=3)
     bob.add_preference("Mystery", weight=2)
+    # Seed some reading-list and history items for demo users
+    # Reading list (queued to read)
+    alice.add_to_reading_list(UserBook("The Hobbit", "J.R.R. Tolkien", "Fantasy"))
+    alice.add_to_reading_list(UserBook("Dune", "Frank Herbert", "Sci-Fi"))
+    bob.add_to_reading_list(UserBook("1984", "George Orwell", "Dystopian"))
+
+    # Mark a couple of books as read (appear in history)
+    alice.mark_as_read(UserBook("The Fellowship of the Ring", "J.R.R. Tolkien", "Fantasy"), 5)
+    bob.mark_as_read(UserBook("Animal Farm", "George Orwell", "Dystopian"), 4)
 
 
 def _seed_p1_database():

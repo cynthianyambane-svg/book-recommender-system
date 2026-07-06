@@ -117,10 +117,14 @@
         return;
       }
       target.innerHTML = items.map((book) => `
-        <article class="catalog-card">
+        <article class="catalog-card" data-title="${book.title}" data-author="${book.author}" data-genre="${book.genre}">
           <h3 class="card-title">${book.title}</h3>
           <div class="card-author">${book.author}</div>
           <span class="card-genre">${book.genre}</span>
+          <div class="card-actions">
+            <button class="btn-secondary" onclick="enqueueFromCard(this)">Enqueue</button>
+            <button class="btn-primary" onclick="markReadFromCard(this)">Mark read</button>
+          </div>
         </article>
       `).join('');
     }
@@ -183,10 +187,13 @@
       const response = await fetch(`/api/users/${state.activeUser}/reading_list`);
       const data = await response.json();
       renderSimpleList(data.reading_list || [], 'readingList', (book) => `
-        <div class="catalogue-row">
+        <div class="catalogue-row" data-title="${book.title}" data-author="${book.author}" data-genre="${book.genre}">
           <div class="col-title">${book.title}</div>
           <div class="col-author">${book.author}</div>
           <div class="col-genre">${book.genre}</div>
+          <div class="col-actions">
+            <button class="btn-primary" onclick="markReadFromRow(this)">Mark read</button>
+          </div>
         </div>
       `, 'No reading list items.');
     }
@@ -201,6 +208,34 @@
           <div class="col-genre">${book.genre}</div>
         </div>
       `, 'No reading history.');
+    }
+
+    // --- UI helpers for card/row actions ---
+    function enqueueFromCard(button) {
+      const card = button.closest('.catalog-card');
+      if (!card) return;
+      const title = card.dataset.title;
+      const author = card.dataset.author;
+      const genre = card.dataset.genre;
+      enqueueBook(title, author, genre);
+    }
+
+    function markReadFromCard(button) {
+      const card = button.closest('.catalog-card');
+      if (!card) return;
+      const title = card.dataset.title;
+      const author = card.dataset.author;
+      const genre = card.dataset.genre;
+      markBookReadPrompt(title, author, genre);
+    }
+
+    function markReadFromRow(button) {
+      const row = button.closest('.catalogue-row');
+      if (!row) return;
+      const title = row.dataset.title;
+      const author = row.dataset.author;
+      const genre = row.dataset.genre;
+      markBookReadPrompt(title, author, genre);
     }
 
     async function loadUserRecommendations() {
@@ -231,6 +266,8 @@
       const response = await fetch(`/api/search?type=${state.activeType}&q=${encodeURIComponent(query)}`);
       const data = await response.json();
       renderCards(data.results || [], 'resultsGrid');
+      // refresh search history UI
+      await loadSearchHistory(data.history);
     }
 
     document.querySelectorAll('.tab').forEach((button) => {
@@ -271,7 +308,73 @@
     window.addEventListener('DOMContentLoaded', async () => {
       await loadUsers();
       await loadCatalogue();
+      await loadSearchHistory();
     });
+
+    // --- Search history UI ---
+    async function loadSearchHistory(preloaded) {
+      // If caller provided history (from /api/search), use it; otherwise fetch
+      const data = preloaded || await (await fetch('/api/history')).json();
+      const chain = document.getElementById('chain');
+      chain.innerHTML = '';
+      if (!data || !data.timeline || data.timeline.length === 0) {
+        chain.innerHTML = '<span class="history-empty">(no searches yet)</span>';
+        document.getElementById('histBack').disabled = true;
+        document.getElementById('histForward').disabled = true;
+        return;
+      }
+
+      data.timeline.forEach((entry, idx) => {
+        const el = document.createElement('button');
+        el.className = 'history-chip';
+        el.textContent = `${entry.search_type}: ${entry.query} (${entry.result_count})`;
+        if (data.current_index === idx) el.classList.add('active');
+        chain.appendChild(el);
+      });
+
+      document.getElementById('histBack').disabled = !data.can_back;
+      document.getElementById('histForward').disabled = !data.can_forward;
+    }
+
+    document.getElementById('histBack').addEventListener('click', async () => {
+      const resp = await fetch('/api/history/back', { method: 'POST' });
+      const data = await resp.json();
+      if (data.entry && data.entry.results) renderCards(data.entry.results || [], 'resultsGrid');
+      await loadSearchHistory(data.history);
+    });
+
+    document.getElementById('histForward').addEventListener('click', async () => {
+      const resp = await fetch('/api/history/forward', { method: 'POST' });
+      const data = await resp.json();
+      if (data.entry && data.entry.results) renderCards(data.entry.results || [], 'resultsGrid');
+      await loadSearchHistory(data.history);
+    });
+
+    // --- API actions called by UI ---
+    async function enqueueBook(title, author, genre) {
+      await fetch(`/api/users/${state.activeUser}/enqueue`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, author, genre })
+      });
+      await loadUserProfile();
+    }
+
+    function markBookReadPrompt(title, author, genre) {
+      const val = prompt(`Rate '${title}' (1-5):`, '5');
+      const rating = parseInt(val);
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5) return alert('Rating must be 1-5.');
+      markBookRead(title, author, genre, rating);
+    }
+
+    async function markBookRead(title, author, genre, rating) {
+      await fetch(`/api/users/${state.activeUser}/mark_read`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, author, genre, rating })
+      });
+      await loadUserProfile();
+    }
   </script>
 </body>
 </html>
