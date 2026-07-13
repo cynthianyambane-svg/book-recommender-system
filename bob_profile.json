@@ -1,0 +1,58 @@
+{
+  "profile": {
+    "user_id": "U002",
+    "name": "Bob Odhiambo",
+    "email": "bob@gmail.com",
+    "created_at": "2026-07-13",
+    "ratings": {
+      "1984": 5,
+      "Animal Farm": 4
+    }
+  },
+  "history": [
+    {
+      "title": "Animal Farm",
+      "author": "George Orwell",
+      "genre": "Political",
+      "rating": 4,
+      "date_added": "2026-07-13",
+      "date_finished": "2026-07-13"
+    },
+    {
+      "title": "1984",
+      "author": "George Orwell",
+      "genre": "Dystopian",
+      "rating": 5,
+      "date_added": "2026-07-13",
+      "date_finished": "2026-07-13"
+    }
+  ],
+  "reading_list": [
+    {
+      "title": "The Girl with the Dragon Tattoo",
+      "author": "Stieg Larsson",
+      "genre": "Thriller",
+      "rating": null,
+      "date_added": "2026-07-13",
+      "date_finished": null
+    }
+  ],
+  "preferences": [
+    [
+      "Political",
+      2
+    ],
+    [
+      "George Orwell",
+      3
+    ],
+    [
+      "Dystopian",
+      3
+    ],
+    [
+      "Thriller",
+      4
+    ]
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "profile": {
+    "user_id": "U001",
+    "name": "Alice Kamau",
+    "email": "alice@gmail.com",
+    "created_at": "2026-07-13",
+    "ratings": {
+      "Dune": 5,
+      "The Hobbit": 4
+    }
+  },
+  "history": [
+    {
+      "title": "The Hobbit",
+      "author": "J.R.R. Tolkien",
+      "genre": "Fantasy",
+      "rating": 4,
+      "date_added": "2026-07-13",
+      "date_finished": "2026-07-13"
+    },
+    {
+      "title": "Dune",
+      "author": "Frank Herbert",
+      "genre": "Sci-Fi",
+      "rating": 5,
+      "date_added": "2026-07-13",
+      "date_finished": "2026-07-13"
+    }
+  ],
+  "reading_list": [
+    {
+      "title": "Ender's Game",
+      "author": "Orson Scott Card",
+      "genre": "Sci-Fi",
+      "rating": null,
+      "date_added": "2026-07-13",
+      "date_finished": null
+    }
+  ],
+  "preferences": [
+    [
+      "J.R.R. Tolkien",
+      1
+    ],
+    [
+      "Frank Herbert",
+      2
+    ],
+    [
+      "J.K. Rowling",
+      3
+    ],
+    [
+      "Mystery",
+      2
+    ],
+    [
+      "Sci-Fi",
+      4
+    ],
+    [
+      "Fantasy",
+      5
+    ]
+  ]
+}
