@@ -387,8 +387,7 @@ class UserProfile:
         """O(1) check."""
         return title in self.profile["ratings"]
 
-    # ── Summary & Export ──────────────────────────────────────
-
+    
     def get_summary(self) -> dict:
         """
         Structured summary for Person 2 (Recommendation Algorithm).
